@@ -12,16 +12,19 @@ update_ssl_config() {
     sed -i "s|/etc/letsencrypt/live/default/|/etc/letsencrypt/live/$domain/|g" /etc/nginx/nginx.conf
 }
 
-# Main execution
-if [ ! -f /etc/letsencrypt/live/default/fullchain.pem ]; then
+#!/bin/bash
+
+# Generate self-signed certificate if it doesn't exist
+if [ ! -f /etc/letsencrypt/live/default/privkey.pem ]; then
+    mkdir -p /etc/letsencrypt/live/default
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout /etc/letsencrypt/live/default/privkey.pem \
         -out /etc/letsencrypt/live/default/fullchain.pem \
-        -subj "/CN=default"
+        -subj "/CN=localhost"
 fi
 
 # Start Nginx
-nginx -g "daemon off;" &
+nginx -g "daemon off;"
 
 # Wait for Nginx to start
 sleep 5

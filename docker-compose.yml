@@ -1,3 +1,4 @@
+version: '3'
 services:
   captcha-proxy:
     build: .
@@ -12,4 +13,7 @@ services:
     image: redis:latest
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis-data:/data
+    sysctls:
+      - vm.overcommit_memory=1
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
